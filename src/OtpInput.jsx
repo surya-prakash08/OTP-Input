@@ -3,6 +3,10 @@ import { useEffect, useRef, useState } from "react";
 const OtpInput = () => {
   const OTP_LENGTH = 4;
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
+
+  const [generateOtp, setGenerateOtp] = useState(null)
+  const[ otpGenerated, setOtpGenerated] = useState(false);
+  const [message, setMessage] = useState("");
   const inputRefs = useRef([]);
 
   useEffect(() => {
@@ -27,6 +31,31 @@ const OtpInput = () => {
       inputRefs.current[index - 1]?.focus();
     }
   };
+  const generateRandomNumber= ()=>{
+     let generatedNum = Math.ceil(Math.random()*10000)
+     return generatedNum
+  }
+
+
+  const handleClick =()=>{
+    setGenerateOtp(generateRandomNumber())
+    
+  }
+
+//   const otpValidation =()=>{
+//     {otp===generateOtp? "Matched" :"did not match"}
+//   }
+//  console.log(generateOtp)
+const handleVarify = () => {
+    const currOtp = parseInt(otp.join(""));
+    if (currOtp === generateOtp) {
+      setMessage("✅ OTP Matched and Verified!");
+    } else {
+      setMessage("❌ OTP Did Not Match.");
+    }
+  };
+
+  
 
   return (
     <div
@@ -51,6 +80,7 @@ const OtpInput = () => {
           fontSize: "12px",
         }}
       >
+
         {otp.map((digit, index) => {
           return (
             <input
@@ -70,6 +100,21 @@ const OtpInput = () => {
           );
         })}
       </div>
+      {message && (
+  <div
+    style={{
+      marginTop: "20px",
+      color: message.includes("✅") ? "green" : "red",
+      fontWeight: "bold",
+      fontSize: "18px",
+      
+    }}
+  >
+    {message}
+  </div>
+)}
+
+     
       <button
         style={{
           width: "500px",
@@ -88,9 +133,14 @@ const OtpInput = () => {
         onMouseOver={(e) => (e.target.style.backgroundColor = "#4338ca")} // Indigo-700 on hover
         onMouseOut={(e) => (e.target.style.backgroundColor = "#4f46e5")} // Back to original on mouse out
         disabled={otp.some((digit) => digit === "")}
+
+                onClick={handleVarify}
       >
-        Verify
+        Verify OTP
       </button>
+
+            <div style={{width:"70px", background:"cyan", fontWeight:"bold", height:"20px", textAlign:"center"}}>{generateOtp }</div>
+      <button onClick={handleClick} disabled={generateOtp ? true: false}>Generate Otp</button>
 
 
       <h3 style={{margin:"50px", opacity:"20%"}}>Made with ❤️ by Surya Prakash</h3>
